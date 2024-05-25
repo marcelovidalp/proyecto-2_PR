@@ -3,18 +3,18 @@ import serial as rs
 from pygame.locals import *
 
 nRes = (640,640); nt_WX = nt_HY = 32; nMAX_ROBOTS = 01; lGo = True
-nMx = nMy = 0; nR_1 = 1154 ; nR_2 = 32
+nMx = nMy = 0; nR_1 = 610 ; nR_2 = 32
 
 #----------------------------------------------------
 #       Estructura Robots
 #----------------------------------------------------
 class eRobot(ct.Structure):
     __fields__ = [
-        ('nF',ct.c_ushort), #Figura
-        ('nX',ct.c_ushort), #Pos X
-        ('nY',ct.c_ushort), #Pos Y
-        ('nR',ct.c_ushort), #Rango
-        ('nS',ct.c_ushort), #
+        ('nF',ct.c_ushort), 
+        ('nX',ct.c_ushort),
+        ('nY',ct.c_ushort),
+        ('nR',ct.c_ushort),
+        ('nS',ct.c_ushort),
         ('dX',ct.c_ushort),
         ('dY',ct.c_ushort),
         ('nV',ct.c_ushort),
@@ -31,6 +31,11 @@ class eCelda(ct.Structure):
         ('nS',ct.c_ubyte), # 0 : No se pinta - # 1 : Si se pinta
         ('nF',ct.c_ubyte), # Fila de Mapa
         ('nC',ct.c_ubyte), # Columna de Mapa 
+        ('nR',ct.c_ubyte), # Recurso a Explotar:
+                                # 1:Acero
+                                # 2:Cobre
+                                # 3:Litio
+                                # 4:Butano
         ('nQ',ct.c_ubyte)  # Cantidad del Recurso
 ]   
     
@@ -63,8 +68,8 @@ def init_Robot():
         aBoe[i].nY = 0    # (RA.randint(0,nRES[1] - nT_HY) / nT_HY) * nT_HY
         aBoe[i].nR = nR_1 # (RA.randint(0,nRES[0] - nT_WX) / nT_WX) * nT_WX
         aBoe[i].nS = 1    # Switch por defecto
-        aBoe[i].dX = 1    # Por defecto robot Direccion Este.-
-        aBoe[i].dY = 0 
+        aBoe[i].dX = 0    # Por defecto robot Direccion Este.-
+        aBoe[i].dY = 1
         aBoe[i].nV = 1 
         aBoe[i].nC = 1 
     return
@@ -82,16 +87,13 @@ def Init_Fig():
     aImg.append(Load_Image('Bo7.png',True  )) # Robot 7      id = 8
     aImg.append(Load_Image('Bo8.png',True  )) # Robot 8      id = 9
     aImg.append(Load_Image('Rat.png',True  )) # Mouse 9      id = 10
+    aImg.append(Load_Image('Msg.png',True  )) # Mouse 9      id = 10
     return aImg
 
 def Init_Mapa():
     for nF in range(0,nRes[1] / nt_HY):
         for nC in range(0,nRes[0] / nt_WX):   
-            #aMap[nF][nC].nT = ra.randint(0,4)  # 0: Baldosa sin Recursos
-                                         # 1: Baldosa con Acero
-                                         # 2: Baldosa con Cobre
-                                         # 3: Baldosa con Litio
-                                         # 4: Baldosa con Gas Butano
+            aMap[nF][nC].nT = 1
             aMap[nF][nC].nD = 1  # 1: Disponible - 0: No Disponible
             aMap[nF][nC].nS = 0 # No se pinta por Defecto
             aMap[nF][nC].nF = nF # Fila de la Celda
@@ -126,14 +128,14 @@ def Pinta_Mapa():
 
 def Pinta_Robot():
     for i in range(0,nMAX_ROBOTS): # Iteramos las 8 Figuras del Robot
-        if aBoe[i].nF == 1: sWin.blit(aFig[3] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 2: sWin.blit(aFig[4] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 3: sWin.blit(aFig[5] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 4: sWin.blit(aFig[6] ,(aBoe[i].nX,aBoe[i].nY))     
-        if aBoe[i].nF == 5: sWin.blit(aFig[7] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 6: sWin.blit(aFig[8] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 7: sWin.blit(aFig[9] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 8: sWin.blit(aFig[10],(aBoe[i].nX,aBoe[i].nY))
+        if aBoe[i].nF == 1: sWin.blit(aFig[2] ,(aBoe[i].nX,aBoe[i].nY))
+        if aBoe[i].nF == 2: sWin.blit(aFig[3] ,(aBoe[i].nX,aBoe[i].nY))
+        if aBoe[i].nF == 3: sWin.blit(aFig[4] ,(aBoe[i].nX,aBoe[i].nY))
+        if aBoe[i].nF == 4: sWin.blit(aFig[5] ,(aBoe[i].nX,aBoe[i].nY))     
+        if aBoe[i].nF == 5: sWin.blit(aFig[6] ,(aBoe[i].nX,aBoe[i].nY))
+        if aBoe[i].nF == 6: sWin.blit(aFig[7] ,(aBoe[i].nX,aBoe[i].nY))
+        if aBoe[i].nF == 7: sWin.blit(aFig[8] ,(aBoe[i].nX,aBoe[i].nY))
+        if aBoe[i].nF == 8: sWin.blit(aFig[9],(aBoe[i].nX,aBoe[i].nY))
     return
 
 #---------------------------------------------------------------------
@@ -142,24 +144,24 @@ def Pinta_Robot():
 #---------------------------------------------------------------------
 def Mueve_Robot():
     for i in range(0,nMAX_ROBOTS): # Recorrimos todos los Robots
-        aBoe[i].nR += 1      # Decrementamos en 1 el Rango del Robot
+        aBoe[i].nR -= 1      # Decrementamos en 1 el Rango del Robot
         if aBoe[i].nR <= 0:   # Robot termino sus pasos? 
             if aBoe[i].nS == 1:
                 aBoe[i].nS = 2  # Cambio de estado
-                aBoe[i].nR = nR_2 # Robot baja nR_2 pasos
+                aBoe[i].nR = nR_2 # Robot ESTE nR_2 pasos
                 aBoe[i].dX = 1 ; aBoe[i].dY = 0
             elif aBoe[i].nS == 2:
                 aBoe[i].nS = 3  # Cambio de estado
-                aBoe[i].nR = nR_1 # Robot OEste nR_1 pasos
-                aBoe[i].dX = -1 ; aBoe[i].dY = 0
+                aBoe[i].nR = nR_1 # Robot SUBE nR_1 pasos
+                aBoe[i].dX = 0 ; aBoe[i].dY = -1
             elif aBoe[i].nS == 3:
                 aBoe[i].nS = 4  # Cambio de estado
-                aBoe[i].nR = nR_2 # Robot baja nR_2 pasos
-                aBoe[i].dX = 0 ; aBoe[i].dY = 1
+                aBoe[i].nR = nR_2 # Robot ESTE nR_2 pasos
+                aBoe[i].dX = 1 ; aBoe[i].dY = 0
             else:
                 aBoe[i].nS = 1  # Cambio de estado
-                aBoe[i].nR = nR_1 # Robot Este nR_1 pasos
-                aBoe[i].dX = 1 ; aBoe[i].dY = 0
+                aBoe[i].nR = nR_1 # Robot BAJA nR_1 pasos
+                aBoe[i].dX = 0 ; aBoe[i].dY = 1
      #Actualizamos (Xs,Ys) de los Sprites en el Mapa 2D
      #--------------------------------------------------
     aBoe[i].nX += aBoe[i].dX*aBoe[i].nV # Posicion Robot[i] en eje X
@@ -170,8 +172,11 @@ def Mueve_Robot():
         aBoe[i].nF += 1
         if aBoe[i].nF == 9:
            aBoe[i].nF = 1
-        if aBoe[i].nX < 1 and aBoe[i].nY == 544: init_Robot()
+        if aBoe[i].nX < 1 and aBoe[i].nY == 578: 
+            init_Robot()
+            sWin.blit
     return
+
 
 def Pinta_Mouse():
     sWin.blit(aFig[10],(nMx,nMy))
