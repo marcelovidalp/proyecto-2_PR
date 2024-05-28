@@ -78,16 +78,11 @@ def Init_Fig():
     aImg = []
     aImg.append(Load_Image('T01.png',False )) # Tile Tierra, id = 0
     aImg.append(Load_Image('T02.png',False )) # Tile Roca,   id = 1
-    aImg.append(Load_Image('Bo1.png',True  )) # Robot 1      id = 2
-    aImg.append(Load_Image('Bo2.png',True  )) # Robot 2      id = 3
-    aImg.append(Load_Image('Bo3.png',True  )) # Robot 3      id = 4
-    aImg.append(Load_Image('Bo4.png',True  )) # Robot 4      id = 5
-    aImg.append(Load_Image('Bo5.png',True  )) # Robot 5      id = 6
-    aImg.append(Load_Image('Bo6.png',True  )) # Robot 6      id = 7
-    aImg.append(Load_Image('Bo7.png',True  )) # Robot 7      id = 8
-    aImg.append(Load_Image('Bo8.png',True  )) # Robot 8      id = 9
-    aImg.append(Load_Image('Rat.png',True  )) # Mouse 9      id = 10
-    aImg.append(Load_Image('Msg.png',True  )) # Mouse 9      id = 10
+    aImg.append(Load_Image('S11.png',True  )) # Robot 8      id = 2
+    aImg.append(Load_Image('S12.png',True  )) # Robot 8      id = 3
+    aImg.append(Load_Image('S13.png',True  )) # Robot 8      id = 4
+    aImg.append(Load_Image('Rat.png',True  )) # Mouse 9      id = 5
+    aImg.append(Load_Image('Msg.png',True  )) # Mensaje      id = 6
     return aImg
 
 def Init_Mapa():
@@ -131,11 +126,6 @@ def Pinta_Robot():
         if aBoe[i].nF == 1: sWin.blit(aFig[2] ,(aBoe[i].nX,aBoe[i].nY))
         if aBoe[i].nF == 2: sWin.blit(aFig[3] ,(aBoe[i].nX,aBoe[i].nY))
         if aBoe[i].nF == 3: sWin.blit(aFig[4] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 4: sWin.blit(aFig[5] ,(aBoe[i].nX,aBoe[i].nY))     
-        if aBoe[i].nF == 5: sWin.blit(aFig[6] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 6: sWin.blit(aFig[7] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 7: sWin.blit(aFig[8] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 8: sWin.blit(aFig[9],(aBoe[i].nX,aBoe[i].nY))
     return
 
 #---------------------------------------------------------------------
@@ -164,22 +154,22 @@ def Mueve_Robot():
                 aBoe[i].dX = 0 ; aBoe[i].dY = 1
      #Actualizamos (Xs,Ys) de los Sprites en el Mapa 2D
      #--------------------------------------------------
-    aBoe[i].nX += aBoe[i].dX*aBoe[i].nV # Posicion Robot[i] en eje X
-    aBoe[i].nY += aBoe[i].dY*aBoe[i].nV # Posicion Robot[i] en eje Y
-    aBoe[i].nC += 1
-    if aBoe[i].nC >= 20:
-        aBoe[i].nC = 1
-        aBoe[i].nF += 1
-        if aBoe[i].nF == 9:
-           aBoe[i].nF = 1
-        if aBoe[i].nX < 1 and aBoe[i].nY == 578: 
-            init_Robot()
-            sWin.blit
+        aBoe[i].nX += aBoe[i].dX*aBoe[i].nV # Posicion Robot[i] en eje X
+        aBoe[i].nY += aBoe[i].dY*aBoe[i].nV # Posicion Robot[i] en eje Y
+        aBoe[i].nC += 1
+        if aBoe[i].nC >= 20:
+            aBoe[i].nC = 1
+            aBoe[i].nF += 1
+            if aBoe[i].nF == 9:
+                aBoe[i].nF = 1
+            if aBoe[i].nX < 1 and aBoe[i].nY == 578: 
+                init_Robot()
+                #sWin.blit
     return
 
 
 def Pinta_Mouse():
-    sWin.blit(aFig[10],(nMx,nMy))
+    sWin.blit(aFig[5],(nMx,nMy))
     return 
 
 def Pausa():
@@ -212,7 +202,7 @@ while lGo:
     Mueve_Robot() 
     Pinta_Mouse()
     pg.display.flip()
-    aClk[0].tick(200)
+    aClk[0].tick(100)
 
 pg.quit
 
