@@ -2,7 +2,7 @@ import pygame as pg, time as ti, random as ra, ctypes as ct
 from pygame.locals import *
 
 nRes = (640,640); nt_WX = nt_HY = 32; nMAX_ROBOTS = 1; lGo = True
-nMx = nMy = 0; nR_1 = 610 ; nR_2 = 32; recorrido=[]
+nMx = nMy = 0; nR_1 = 610 ; nR_2 = 32; recorrido=[] #Creamos un arreglo para usarlo luego en el movimiento del robot
 
 #----------------------------------------------------
 #       Estructura Robots
@@ -98,18 +98,18 @@ def Init_Mapa():
 def Pinta_Mapa():
     
     for nF in range(0,nRes[1] / nt_HY):
-        for nC in range(0,nRes[0] / nt_WX):
+        for nC in range(0,nRes[0] / nt_WX): #Recorre columnas y filas
             if aMap[nF][nC].nT == 0: # Baldosa sin recursos
-                sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
+                sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Muestra la tile 0 
 
-            if  nC == (aBoe[0].nX+1)/nR_2 and nF == (aBoe[0].nY+1)/nR_2:
-                if (nC,nF) not in recorrido:
+            if  nC == (aBoe[0].nX+1)/nR_2 and nF == (aBoe[0].nY+1)/nR_2: #Aqui calculamos la tile actual dividiendo la posicion actual (x e y) en el tamano de los tiles
+                                            #Se le suma 1 a la posicion actual para que la division no sea justa y sobre el pixel necesario para pintar la ultima columna y fila
+                if (nC,nF) not in recorrido: #Si la posicion actual no esta en el arreglo se agrega
                     recorrido.append((nC,nF))
-                aMap[nF][nC].nT = 1 # Baldosa con Recurso -> Acero
+                aMap[nF][nC].nT = 1 # Baldosa con Acero
                 sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Acero
-            if (nC,nF) in recorrido:
-
-                sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) 
+            if (nC,nF) in recorrido: #Si la posicion actual esta en el arreglo se muestra la tile 1
+                sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Se pintan todas las tiles en el arreglo para que no se despinten en una nueva actualizacion de pantalla
 
     return
 
@@ -157,11 +157,9 @@ def Mueve_Robot():
         if 0 <= newX < nRes[0] - nt_WX and 0 <= newY < nRes[1] - nt_HY:
             aBoe[i].nX = newX
             aBoe[i].nY = newY
-            # print(newX,newY)
             if newX == 607 and newY == 32:
                 aBoe[i].nR = 0 
-                aBoe[i].nV = 0
-                Pausa()
+                Final()#Llamamos a la funcion final cuando la tile esta en x:607 e y:32
             
             else:
                 aBoe[i].nX = newX  
@@ -181,15 +179,21 @@ def Pinta_Mouse():
     sWin.blit(aFig[10],(nMx,nMy))
     return 
 
-def Pausa():
+def Final():
 
-    sWin.blit(aFig[11],(200,200))
-    pg.display.flip()
-    global lGo
+    sWin.blit(aFig[11],(200,200)) #Muestra la bandera
+    pg.display.flip()#Actualiza la pantalla para mostrar la bandera
+    global lGo #Llama a la variable global lGo 
     while lGo:
-        e = pg.event.wait()   #Pausa el ju
+        e = pg.event.wait()   #Pausa el juego hasta un evento quit
         if e.type in (pg.QUIT, pg.KEYDOWN):
             lGo = False
+
+def Pausa():
+    while 1:
+        e = pg.event.wait()
+        if e.type in (pg.QUIT, pg.KEYDOWN):
+            return
 
 
 
