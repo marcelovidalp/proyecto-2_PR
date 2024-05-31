@@ -1,5 +1,4 @@
 import pygame as pg, time as ti, random as ra, ctypes as ct
-#import serial as rs
 from pygame.locals import *
 
 nRes = (640,640); nt_WX = nt_HY = 32; nMAX_ROBOTS = 01; lGo = True
