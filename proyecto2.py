@@ -162,17 +162,26 @@ def Mueve_Robot():
                 aBoe[i].dX = 0 ; aBoe[i].dY = 1
      #Actualizamos (Xs,Ys) de los Sprites en el Mapa 2D
      #--------------------------------------------------
-        aBoe[i].nX += aBoe[i].dX*aBoe[i].nV # Posicion Robot[i] en eje X
-        aBoe[i].nY += aBoe[i].dY*aBoe[i].nV # Posicion Robot[i] en eje Y
+        newX = aBoe[i].nX + aBoe[i].dX * aBoe[i].nV
+        newY = aBoe[i].nY + aBoe[i].dY * aBoe[i].nV
+
+        if 0 <= newX < nRes[0] - nt_WX and 0 <= newY < nRes[1] - nt_HY:
+            aBoe[i].nX = newX
+            aBoe[i].nY = newY
+            if newX == 320 and newY == 320:
+                aBoe[i].nR = 0  
+            else:
+                aBoe[i].nX = newX  
+                aBoe[i].nY = newY  
+        else:
+            aBoe[i].nR = 0  
+
         aBoe[i].nC += 1
         if aBoe[i].nC >= 20:
             aBoe[i].nC = 1
             aBoe[i].nF += 1
             if aBoe[i].nF == 9:
                 aBoe[i].nF = 1
-            if aBoe[i].nX < 1 and aBoe[i].nY == 578: 
-                init_Robot()
-                sWin.blit
     return
 
 def Pinta_Mouse():
