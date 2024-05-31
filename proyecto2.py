@@ -2,7 +2,7 @@ import pygame as pg, time as ti, random as ra, ctypes as ct
 from pygame.locals import *
 
 nRes = (640,640); nt_WX = nt_HY = 32; nMAX_ROBOTS = 1; lGo = True
-nMx = nMy = 0; nR_1 = 610 ; nR_2 = 32
+nMx = nMy = 0; nR_1 = 610 ; nR_2 = 32; recorrido=[]
 
 #----------------------------------------------------
 #       Estructura Robots
@@ -87,11 +87,6 @@ def Init_Fig():
 def Init_Mapa():
     for nF in range(0,nRes[1] / nt_HY):
         for nC in range(0,nRes[0] / nt_WX):   
-            #aMap[nF][nC].nT = ra.randint(0,4)  # 0: Baldosa sin Recursos
-                                         # 1: Baldosa con Acero
-                                         # 2: Baldosa con Cobre
-                                         # 3: Baldosa con Litio
-                                         # 4: Baldosa con Gas Butano
             aMap[nF][nC].nD = 1  # 1: Disponible - 0: No Disponible
             aMap[nF][nC].nS = 0 # No se pinta por Defecto
             aMap[nF][nC].nF = nF # Fila de la Celda
@@ -101,26 +96,20 @@ def Init_Mapa():
     return 
 
 def Pinta_Mapa():
+    
     for nF in range(0,nRes[1] / nt_HY):
         for nC in range(0,nRes[0] / nt_WX):
             if aMap[nF][nC].nT == 0: # Baldosa sin recursos
-                sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
+                sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
 
-            if aMap[nF][nC].nT == 1: # Baldosa con Recurso -> Acero
-                if aMap[nF][nC].nS == 1: sWin.blit(aFig[13],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Acero
-                else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
+            if  nC == (aBoe[0].nX+1)/nR_2 and nF == (aBoe[0].nY+1)/nR_2:
+                if (nC,nF) not in recorrido:
+                    recorrido.append((nC,nF))
+                aMap[nF][nC].nT = 1 # Baldosa con Recurso -> Acero
+                sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Acero
+            if (nC,nF) in recorrido:
 
-            if aMap[nF][nC].nT == 2:  # Baldosa con Recurso -> Cobre
-                if aMap[nF][nC].nS == 1: sWin.blit(aFig[14],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Cobre
-                else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
-
-            if aMap[nF][nC].nT == 3:  # Baldosa con Recurso -> Litio
-                if aMap[nF][nC].nS == 1: sWin.blit(aFig[15],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Litio
-                else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
-
-            if aMap[nF][nC].nT == 4:  # Baldosa con Recurso -> Gas Butano
-                if aMap[nF][nC].nS == 1: sWin.blit(aFig[16],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Gas Butano
-                else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
+                sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) 
 
     return
 
@@ -133,7 +122,7 @@ def Pinta_Robot():
         if aBoe[i].nF == 5: sWin.blit(aFig[6] ,(aBoe[i].nX,aBoe[i].nY))
         if aBoe[i].nF == 6: sWin.blit(aFig[7] ,(aBoe[i].nX,aBoe[i].nY))
         if aBoe[i].nF == 7: sWin.blit(aFig[8] ,(aBoe[i].nX,aBoe[i].nY))
-        if aBoe[i].nF == 8: sWin.blit(aFig[9],(aBoe[i].nX,aBoe[i].nY))
+        if aBoe[i].nF == 8: sWin.blit(aFig[9] ,(aBoe[i].nX,aBoe[i].nY))
     return
 
 #---------------------------------------------------------------------
@@ -168,8 +157,8 @@ def Mueve_Robot():
         if 0 <= newX < nRes[0] - nt_WX and 0 <= newY < nRes[1] - nt_HY:
             aBoe[i].nX = newX
             aBoe[i].nY = newY
-            print(newX,newY)
-            if newX == 607 and newY == 0:
+            # print(newX,newY)
+            if newX == 607 and newY == 32:
                 aBoe[i].nR = 0 
                 aBoe[i].nV = 0
                 Pausa()
@@ -198,9 +187,9 @@ def Pausa():
     pg.display.flip()
     global lGo
     while lGo:
-        e = pg.event.wait()
+        e = pg.event.wait()   #Pausa el ju
         if e.type in (pg.QUIT, pg.KEYDOWN):
-            lGo = (2 > 3)
+            lGo = False
 
 
 
