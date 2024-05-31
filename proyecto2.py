@@ -1,7 +1,7 @@
 import pygame as pg, time as ti, random as ra, ctypes as ct
 from pygame.locals import *
 
-nRes = (640,640); nt_WX = nt_HY = 32; nMAX_ROBOTS = 01; lGo = True
+nRes = (640,640); nt_WX = nt_HY = 32; nMAX_ROBOTS = 1; lGo = True
 nMx = nMy = 0; nR_1 = 610 ; nR_2 = 32
 
 #----------------------------------------------------
@@ -81,6 +81,7 @@ def Init_Fig():
     aImg.append(Load_Image('Bo7.png',True  )) # Robot 7      id = 8
     aImg.append(Load_Image('Bo8.png',True  )) # Robot 8      id = 9
     aImg.append(Load_Image('Rat.png',True  )) # Mouse 9      id = 10
+    aImg.append(Load_Image('Msg.png',True  )) # Mensaje     id = 11
     return aImg
 
 def Init_Mapa():
@@ -167,8 +168,12 @@ def Mueve_Robot():
         if 0 <= newX < nRes[0] - nt_WX and 0 <= newY < nRes[1] - nt_HY:
             aBoe[i].nX = newX
             aBoe[i].nY = newY
-            if newX == 320 and newY == 320:
-                aBoe[i].nR = 0  
+            print(newX,newY)
+            if newX == 607 and newY == 0:
+                aBoe[i].nR = 0 
+                aBoe[i].nV = 0
+                Pausa()
+            
             else:
                 aBoe[i].nX = newX  
                 aBoe[i].nY = newY  
@@ -188,10 +193,15 @@ def Pinta_Mouse():
     return 
 
 def Pausa():
-    while 1:
+
+    sWin.blit(aFig[11],(200,200))
+    pg.display.flip()
+    global lGo
+    while lGo:
         e = pg.event.wait()
         if e.type in (pg.QUIT, pg.KEYDOWN):
-            return
+            lGo = (2 > 3)
+
 
 
 sWin = init_Pygame() ; aFig = Init_Fig() 
@@ -217,7 +227,7 @@ while lGo:
     Mueve_Robot() 
     Pinta_Mouse()
     pg.display.flip()
-    aClk[0].tick(200)
+    aClk[0].tick(3000)
 
 pg.quit
 
