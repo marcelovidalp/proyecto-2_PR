@@ -81,7 +81,7 @@ def Init_Fig():
     aImg.append(Load_Image('Bo7.png',True  )) # Robot 7      id = 8
     aImg.append(Load_Image('Bo8.png',True  )) # Robot 8      id = 9
     aImg.append(Load_Image('Rat.png',True  )) # Mouse 9      id = 10
-    aImg.append(Load_Image('Msg.png',True  )) # Mensaje     id = 11
+    aImg.append(Load_Image('Msg.png',False )) # Mensaje     id = 11
     return aImg
 
 def Init_Mapa():

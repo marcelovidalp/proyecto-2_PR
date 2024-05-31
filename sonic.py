@@ -2,7 +2,7 @@ import pygame as pg, time as ti, random as ra, ctypes as ct
 from pygame.locals import *
 
 nRes = (640,640); nt_WX = nt_HY = 32; nMAX_ROBOTS = 01; lGo = True
-nMx = nMy = 0; nR_1 = 610 ; nR_2 = 32
+nMx = nMy = 0; nR_1 = 610 ; nR_2 = 32; recorrido=[]
 
 #----------------------------------------------------
 #       Estructura Robots
@@ -96,32 +96,24 @@ def Init_Mapa():
             aMap[nF][nC].nQ = ra.randint(100,1000) # Unidades de RR
     return 
 
-def Pinta_Mapa():
+def Pinta_Mapa():   
     for nF in range(0,nRes[1] / nt_HY):
         for nC in range(0,nRes[0] / nt_WX):
             if aMap[nF][nC].nT == 0: # Baldosa sin recursos
-                sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
+                sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
 
-            if aMap[nF][nC].nT == 1: # Baldosa con Recurso -> Acero
-                if aMap[nF][nC].nS == 1: sWin.blit(aFig[13],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Acero
-                else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
+            if  nC == (aBoe[0].nX+1)/nR_2 and nF == (aBoe[0].nY+1)/nR_2:
+                if (nC,nF) not in recorrido:
+                    recorrido.append((nC,nF))
+                aMap[nF][nC].nT = 1 # Baldosa con Recurso -> Acero
+                sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Acero
+            if (nC,nF) in recorrido:
 
-            if aMap[nF][nC].nT == 2:  # Baldosa con Recurso -> Cobre
-                if aMap[nF][nC].nS == 1: sWin.blit(aFig[14],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Cobre
-                else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
-
-            if aMap[nF][nC].nT == 3:  # Baldosa con Recurso -> Litio
-                if aMap[nF][nC].nS == 1: sWin.blit(aFig[15],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Litio
-                else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
-
-            if aMap[nF][nC].nT == 4:  # Baldosa con Recurso -> Gas Butano
-                if aMap[nF][nC].nS == 1: sWin.blit(aFig[16],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Gas Butano
-                else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa sin RR
-
+                sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) 
     return
 
 def Pinta_Robot():
-    for i in range(0,nMAX_ROBOTS): # Iteramos las 8 Figuras del Robot
+    for i in range(0,nMAX_ROBOTS): # Iteramos las 3 Figuras de Sonic
         if aBoe[i].nF == 1: sWin.blit(aFig[2] ,(aBoe[i].nX,aBoe[i].nY))
         if aBoe[i].nF == 2: sWin.blit(aFig[3] ,(aBoe[i].nX,aBoe[i].nY))
         if aBoe[i].nF == 3: sWin.blit(aFig[4] ,(aBoe[i].nX,aBoe[i].nY))
@@ -153,18 +145,32 @@ def Mueve_Robot():
                 aBoe[i].dX = 0 ; aBoe[i].dY = 1
      #Actualizamos (Xs,Ys) de los Sprites en el Mapa 2D
      #--------------------------------------------------
-        aBoe[i].nX += aBoe[i].dX*aBoe[i].nV # Posicion Robot[i] en eje X
-        aBoe[i].nY += aBoe[i].dY*aBoe[i].nV # Posicion Robot[i] en eje Y
+        newX = aBoe[i].nX + aBoe[i].dX * aBoe[i].nV
+        newY = aBoe[i].nY + aBoe[i].dY * aBoe[i].nV
+
+        if 0 <= newX < nRes[0] - nt_WX and 0 <= newY < nRes[1] - nt_HY:
+            aBoe[i].nX = newX
+            aBoe[i].nY = newY
+            # print(newX,newY)
+            if newX == 607 and newY == 32:
+                aBoe[i].nR = 0 
+                aBoe[i].nV = 0
+                Pausa()
+            
+            else:
+                aBoe[i].nX = newX  
+                aBoe[i].nY = newY  
+        else:
+            aBoe[i].nR = 0  
+
         aBoe[i].nC += 1
         if aBoe[i].nC >= 20:
             aBoe[i].nC = 1
             aBoe[i].nF += 1
             if aBoe[i].nF == 9:
                 aBoe[i].nF = 1
-            if aBoe[i].nX < 1 and aBoe[i].nY == 578: 
-                init_Robot()
-                #sWin.blit
     return
+
 
 
 def Pinta_Mouse():
@@ -172,11 +178,14 @@ def Pinta_Mouse():
     return 
 
 def Pausa():
-    while 1:
-        e = pg.event.wait()
-        if e.type in (pg.QUIT, pg.KEYDOWN):
-            return
 
+    sWin.blit(aFig[11],(200,200))
+    pg.display.flip()
+    global lGo
+    while lGo:
+        e = pg.event.wait()   #Pausa el ju
+        if e.type in (pg.QUIT, pg.KEYDOWN):
+            lGo = False
 
 sWin = init_Pygame() ; aFig = Init_Fig() 
 
@@ -201,7 +210,7 @@ while lGo:
     Mueve_Robot() 
     Pinta_Mouse()
     pg.display.flip()
-    aClk[0].tick(100)
+    aClk[0].tick(1500)
 
 pg.quit
 
