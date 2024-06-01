@@ -2,8 +2,7 @@ import pygame as pg, time as ti, random as ra, ctypes as ct
 from pygame.locals import *
 
 nRes = (640,640); nt_WX = nt_HY = 32; nMAX_ROBOTS = 1; lGo = True
-nMx = nMy = 0; nR_1 = 610 ; nR_2 = 32; recorrido=[] #Creamos un arreglo para usarlo luego en el movimiento del robot
-
+nMx = nMy = 0; nR_1 = 610 ; nR_2 = 32
 #----------------------------------------------------
 #       Estructura Robots
 #----------------------------------------------------
@@ -86,7 +85,8 @@ def Init_Fig():
 
 def Init_Mapa():
     for nF in range(0,nRes[1] / nt_HY):
-        for nC in range(0,nRes[0] / nt_WX):   
+        for nC in range(0,nRes[0] / nt_WX):  
+            aMap[nF][nC].nT = 0 # inicializa el mapa con la tile sin recursos (0)
             aMap[nF][nC].nD = 1  # 1: Disponible - 0: No Disponible
             aMap[nF][nC].nS = 0 # No se pinta por Defecto
             aMap[nF][nC].nF = nF # Fila de la Celda
@@ -99,19 +99,17 @@ def Pinta_Mapa():
     
     for nF in range(0,nRes[1] / nt_HY):
         for nC in range(0,nRes[0] / nt_WX): #Recorre columnas y filas
-            if aMap[nF][nC].nT == 0: # Baldosa sin recursos
-                sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Muestra la tile 0 
+            if aMap[nF][nC].nT == 0: # pregunta si la baldosa no tiene recursos
+                sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Muestra la tile 0 (sin recursos)
 
-            if  nC == (aBoe[0].nX+1)/nR_2 and nF == (aBoe[0].nY+1)/nR_2: #Aqui calculamos la tile actual dividiendo la posicion actual (x e y) en el tamano de los tiles
-                                            #Se le suma 1 a la posicion actual para que la division no sea justa y sobre el pixel necesario para pintar la ultima columna y fila
-                if (nC,nF) not in recorrido: #Si la posicion actual no esta en el arreglo se agrega
-                    recorrido.append((nC,nF))
-                aMap[nF][nC].nT = 1 # Baldosa con Acero
-                sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Baldosa con Acero
-            if (nC,nF) in recorrido: #Si la posicion actual esta en el arreglo se muestra la tile 1
-                sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Se pintan todas las tiles en el arreglo para que no se despinten en una nueva actualizacion de pantalla
+            if  nC == (aBoe[0].nX+1)/nR_2 and nF == (aBoe[0].nY+1)/nR_2: #Aqui preguntamos y calculamos la tile actual dividiendo la posicion actual (x e y) en el tamano de los tiles
+                                                #Se le suma 1 a la posicion actual para que la division no sea justa y sobre el pixel necesario para pintar la ultima columna y fila
 
-    return
+                aMap[nF][nC].nT = 1 # Cambiamos el tipo de tile a 1 (con acero)
+                aMap[nF][nC].nS = 1 # Cambiamos el valor de la baldosa para pintarla
+            if aMap[nF][nC].nT == 1: # Preguntamos si la tile es acero 
+                if aMap[nF][nC].nS == 1: sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Mostramos la tile de acereo
+                else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Si no mostramos tile vacia 
 
 def Pinta_Robot():
     for i in range(0,nMAX_ROBOTS): # Iteramos las 8 Figuras del Robot
