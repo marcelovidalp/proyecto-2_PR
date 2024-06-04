@@ -25,11 +25,9 @@ class eRobot(ct.Structure):
 class eCelda(ct.Structure):
     _fields_ = [
         ('nT',ct.c_ubyte), # Tipo de Tile/Baldosa
-        ('nD',ct.c_ubyte), # Tile Disponible? 
         ('nS',ct.c_ubyte), # 0 : No se pinta - # 1 : Si se pinta
         ('nF',ct.c_ubyte), # Fila de Mapa
         ('nC',ct.c_ubyte), # Columna de Mapa 
-        ('nQ',ct.c_ubyte)  # Cantidad del Recurso
 ]   
     
 #----------------------------------------------------
@@ -37,8 +35,8 @@ class eCelda(ct.Structure):
 #---------------------------------------------------- 
 def Load_Image(sFile,transp = False):
     try: image = pg.image.load(sFile)
-    except pg.error,message:
-        raise SystemExit,message
+    except pg.error as message:
+        raise SystemExit(message)
     image = image.convert()
     if transp:
        color = image.get_at((0,0))
@@ -86,13 +84,11 @@ def Init_Fig():
 def Init_Mapa():
     for nF in range(0,nRes[1] / nt_HY):
         for nC in range(0,nRes[0] / nt_WX):  
-            aMap[nF][nC].nT = 0 # inicializa el mapa con la tile sin recursos (0)
-            aMap[nF][nC].nD = 1  # 1: Disponible - 0: No Disponible
+            aMap[nF][nC].nT = 1 # inicializa el mapa con la tile sin recursos (0)
+
             aMap[nF][nC].nS = 0 # No se pinta por Defecto
             aMap[nF][nC].nF = nF # Fila de la Celda
             aMap[nF][nC].nC = nC # Colu de la Celda
-            aMap[nF][nC].nR = aMap[nF][nC].nT
-            aMap[nF][nC].nQ = ra.randint(100,1000) # Unidades de RR
     return 
 
 def Pinta_Mapa():
@@ -102,14 +98,21 @@ def Pinta_Mapa():
             if aMap[nF][nC].nT == 0: # pregunta si la baldosa no tiene recursos
                 sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Muestra la tile 0 (sin recursos)
 
-            if  nC == (aBoe[0].nX+1)/nR_2 and nF == (aBoe[0].nY+1)/nR_2: #Aqui preguntamos y calculamos la tile actual dividiendo la posicion actual (x e y) en el tamano de los tiles
-                                                #Se le suma 1 a la posicion actual para que la division no sea justa y sobre el pixel necesario para pintar la ultima columna y fila
+            if  nC == (aBoe[0].nX+1)/nR_2 and nF == (aBoe[0].nY+1)/nR_2:    #Aqui preguntamos y calculamos la tile actual 
+                                                                        #dividiendo la posicion actual (x e y) en el tamano de los tiles
+                                                #Se le suma 1 a la posicion actual para que la division no sea justa y
+                                                #sobre el pixel necesario para pintar la ultima columna y fila
 
                 aMap[nF][nC].nT = 1 # Cambiamos el tipo de tile a 1 (con acero)
                 aMap[nF][nC].nS = 1 # Cambiamos el valor de la baldosa para pintarla
             if aMap[nF][nC].nT == 1: # Preguntamos si la tile es acero 
-                if aMap[nF][nC].nS == 1: sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Mostramos la tile de acereo
+                if aMap[nF][nC].nS == 1: sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Mostramos la tile de acero
                 else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Si no mostramos tile vacia 
+
+
+
+
+
 
 def Pinta_Robot():
     for i in range(0,nMAX_ROBOTS): # Iteramos las 8 Figuras del Robot
@@ -218,7 +221,7 @@ while lGo:
     Mueve_Robot() 
     Pinta_Mouse()
     pg.display.flip()
-    aClk[0].tick(3000)
+    aClk[0].tick(1000)
 
 pg.quit
 
