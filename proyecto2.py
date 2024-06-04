@@ -156,7 +156,7 @@ def Mueve_Robot():
             
             else:
                 aBoe[i].nX = newX  
-                aBoe[i].nY = newY  
+                aBoe[i].nY = newY
         else:
             aBoe[i].nR = 0  
 
