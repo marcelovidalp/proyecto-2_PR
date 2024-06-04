@@ -85,7 +85,6 @@ def Init_Mapa():
     for nF in range(0,nRes[1] / nt_HY):
         for nC in range(0,nRes[0] / nt_WX):  
             aMap[nF][nC].nT = 1 # inicializa el mapa con la tile sin recursos (0)
-
             aMap[nF][nC].nS = 0 # No se pinta por Defecto
             aMap[nF][nC].nF = nF # Fila de la Celda
             aMap[nF][nC].nC = nC # Colu de la Celda
@@ -94,9 +93,8 @@ def Init_Mapa():
 def Pinta_Mapa():
     
     for nF in range(0,nRes[1] / nt_HY):
-        for nC in range(0,nRes[0] / nt_WX): #Recorre columnas y filas
-            if aMap[nF][nC].nT == 0: # pregunta si la baldosa no tiene recursos
-                sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Muestra la tile 0 (sin recursos)
+        for nC in range(0,nRes[0] / nt_WX): #Recorre columnas y filas # pregunta si la baldosa no tiene recursos
+            sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Muestra la tile 0 (sin recursos)
 
             if  nC == (aBoe[0].nX+1)/nR_2 and nF == (aBoe[0].nY+1)/nR_2:    #Aqui preguntamos y calculamos la tile actual 
                                                                         #dividiendo la posicion actual (x e y) en el tamano de los tiles
