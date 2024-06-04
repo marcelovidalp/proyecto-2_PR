@@ -97,15 +97,11 @@ def Pinta_Mapa():
             sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Muestra la tile 0 (sin recursos)
 
             if  nC == (aBoe[0].nX+1)/nR_2 and nF == (aBoe[0].nY+1)/nR_2:    #Aqui preguntamos y calculamos la tile actual 
-                                                                        #dividiendo la posicion actual (x e y) en el tamano de los tiles
-                                                #Se le suma 1 a la posicion actual para que la division no sea justa y
-                                                #sobre el pixel necesario para pintar la ultima columna y fila
-
-                aMap[nF][nC].nT = 1 # Cambiamos el tipo de tile a 1 (con acero)
-                aMap[nF][nC].nS = 1 # Cambiamos el valor de la baldosa para pintarla
-            if aMap[nF][nC].nT == 1: # Preguntamos si la tile es acero 
-                if aMap[nF][nC].nS == 1: sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Mostramos la tile de acero
-                else: sWin.blit(aFig[00],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Si no mostramos tile vacia 
+                if aMap[nF][nC].nT == 1:
+                    aMap[nF][nC].nS = 1 # Cambiamos el valor de la baldosa para pintarla
+            if aMap[nF][nC].nS == 1: # Preguntamos si la tile es acero 
+                sWin.blit(aFig[1],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) # Mostramos la tile de acero
+            else: sWin.blit(aFig[0],(aMap[nF][nC].nC*nt_HY,aMap[nF][nC].nF*nt_WX)) #Si no mostramos tile vacia 
 
 
 
