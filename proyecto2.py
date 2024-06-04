@@ -150,8 +150,6 @@ def Mueve_Robot():
         newY = aBoe[i].nY + aBoe[i].dY * aBoe[i].nV
 
         if 0 <= newX < nRes[0] - nt_WX and 0 <= newY < nRes[1] - nt_HY:
-            aBoe[i].nX = newX
-            aBoe[i].nY = newY
             if newX == 607 and newY == 32:
                 aBoe[i].nR = 0 
                 Final()#Llamamos a la funcion final cuando la tile esta en x:607 e y:32
